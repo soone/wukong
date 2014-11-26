@@ -2,7 +2,10 @@
 # *-* coding:utf-8 *-*
 
 from scapy.all import srp, Ether, ARP, conf
+import git
+
 IPSCAN = '192.168.88.1/24'
+LOCALDB = "./origin.db"
 
 def getDeviceMac():
 	res = []
