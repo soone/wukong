@@ -9,7 +9,8 @@ REPO = "/home/pi/wukong/"
 LOCALDB = REPO + "xw_origin.db"
 BRANCHNAME = "xiaowu"
 
-HOSTS = {"soone" : ["00:12:fe:c8:62:e0", "14:f6:5a:b9:31:4d"]}
+HOSTS = {"soone" : ["00:12:fe:c8:62:e0", "14:f6:5a:b9:31:4d"],
+	"adou" : ["8c:77:16:b3:8a:ce"]}
 REPEATCOUNT = 5
 
 def repoAction():
@@ -29,7 +30,7 @@ def repoAction():
 def getDeviceMac():
 	res = []
 	try:
-		ans, unans = srp(Ether(dst="FF:FF:FF:FF:FF:FF")/ARP(pdst=IPSCAN), timeout=5, verbose=False)
+		ans, unans = srp(Ether(dst="FF:FF:FF:FF:FF:FF")/ARP(pdst=IPSCAN), timeout=2, verbose=False)
 	except Exception, e:
 		print str(e)
 		return False
@@ -89,7 +90,7 @@ class PushGit(threading.Thread):
 
     def run(self):
         while not self.thread_stop:
-            print repoAction()
+            repoAction()
             time.sleep(self.interval)
 
     def stop(self):
@@ -97,16 +98,12 @@ class PushGit(threading.Thread):
 
 def main():
     global hostNames
-    try:
-        for n in hostNames:
-            nThread = MyThread(10, n)
-            nThread.start()
+    for n in hostNames:
+        nThread = MyThread(10, n)
+        nThread.start()
 
-        pgThread = PushGit(5000)
-        pgThread.start()
-    finally:
-        nThread.stop()
-        pgThread.stop()
+    pgThread = PushGit(5000)
+    pgThread.start()
 
 if __name__ == "__main__":
     try:
