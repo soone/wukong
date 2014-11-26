@@ -4,13 +4,12 @@
 import threading, git, time
 from scapy.all import srp, Ether, ARP, conf
 
-#IPSCAN = '192.168.88.1/24'
-IPSCAN = '192.168.0.1/24'
-REPO = "/home/soone/code/python/wukong/"
+IPSCAN = '192.168.88.1/24'
+REPO = "/home/pi/wukong/"
 LOCALDB = REPO + "xw_origin.db"
 BRANCHNAME = "xiaowu"
 
-HOSTS = {"soone" : ["3c:07:54:31:10:38"]}
+HOSTS = {"soone" : ["00:12:fe:c8:62:e0", "14:f6:5a:b9:31:4d"]}
 REPEATCOUNT = 5
 
 def repoAction():
@@ -42,6 +41,7 @@ def getDeviceMac():
 
 def checkMacStatus(hostName):
     macs = getDeviceMac()
+    print macs
     for eMac in HOSTS[hostName]:
         if eMac in macs:
             return True
@@ -102,7 +102,7 @@ def main():
             nThread = MyThread(10, n)
             nThread.start()
 
-        pgThread = PushGit(100)
+        pgThread = PushGit(5000)
         pgThread.start()
     finally:
         nThread.stop()
