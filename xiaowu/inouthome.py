@@ -9,8 +9,7 @@ REPO = "/home/pi/wukong/"
 LOCALDB = REPO + "xw_origin.db"
 BRANCHNAME = "xiaowu"
 
-HOSTS = {"soone" : ["00:12:fe:c8:62:e0", "14:f6:5a:b9:31:4d"],
-	"adou" : ["8c:77:16:b3:8a:ce"]}
+HOSTS = {"soone" : ["14:f6:5a:b9:31:4d"], "adou" : ["8c:77:16:b3:8a:ce"], "soone_lenovo" : ["00:12:fe:c8:62:e0"]}
 REPEATCOUNT = 5
 
 def repoAction():
