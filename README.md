@@ -15,7 +15,10 @@ Height: 120mm
 
 # Environment
 
-* 
+* Python2.7
+* GitPython
+* scapy
+* bluez
 
 # ToDo
 
