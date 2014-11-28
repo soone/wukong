@@ -23,7 +23,7 @@ def repoAction():
         origin.push(BRANCHNAME)
 
     except Exception, e:
-        print >> sys.stderr, "fork #2 failed: %d (%s)" % (e.errno, e.strerror)
+        print >> sys.stderr, "repo rsync failed: (%s)" % str(e)
         return False
 
 def getDeviceMac():
@@ -31,7 +31,7 @@ def getDeviceMac():
 	try:
 		ans, unans = srp(Ether(dst="FF:FF:FF:FF:FF:FF")/ARP(pdst=IPSCAN), timeout=2, verbose=False)
 	except Exception, e:
-                print >> sys.stderr, "fork #2 failed: %d (%s)" % (e.errno, e.strerror)
+                print >> sys.stderr, "get device mac failed: %s" % str(e)
 		return False
 	else:
 		for snd, rcv in ans:
@@ -116,7 +116,8 @@ def main():
             if '192' not in os.popen('ifconfig | grep 192').read():
                 print >> sys.stderr, "wifi is down, restart..."
                 os.system("/etc/init.d/networking restart")
-            time.sleep(300)
+
+            time.sleep(20)
 
     networkThread = threading.Thread(target=checkNetwork)
     networkThread.start()
