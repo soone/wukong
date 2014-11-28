@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # *-* coding:utf-8 *-*
 
-import threading, git, time
+import threading, git, time, signal
 from scapy.all import srp, Ether, ARP, conf
 
 IPSCAN = '192.168.88.1/24'
@@ -97,12 +97,22 @@ class PushGit(threading.Thread):
 
 def main():
     global hostNames
+    threadObjs = []
     for n in hostNames:
         nThread = MyThread(10, n)
         nThread.start()
+        threadObjs.append(nThread)
 
     pgThread = PushGit(5000)
     pgThread.start()
+    threadObjs.append(pgThread)
+
+    def threadExit(signum, frame):
+        for t in threadObjs:
+            t.stop()
+
+    signal.signal(signal.SIGINT, threadExit)
+    signal.signal(signal.SIGTERM, threadExit)
 
 if __name__ == "__main__":
     try:
