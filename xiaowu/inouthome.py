@@ -110,6 +110,18 @@ def main():
     pgThread.start()
     threadObjs.append(pgThread)
 
+    # 用来判断网络是否断开，断开重连
+    def checkNetwork():
+        while True:
+            if '192' not in os.popen('ifconfig | grep 192').read():
+                print >> sys.stderr, "wifi is down, restart..."
+                os.system("/etc/init.d/networking restart")
+            time.sleep(300)
+
+    networkThread = threading.Thread(target=checkNetwork)
+    networkThread.start()
+    threadObjs.append(networkThread)
+
     def threadExit(signum, frame):
         for t in threadObjs:
             t.stop()
