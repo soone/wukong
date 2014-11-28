@@ -7,9 +7,6 @@ from scapy.all import srp, Ether, ARP, conf
 IPSCAN = '192.168.88.1/24'
 REPO = "/home/pi/wukong/"
 LOCALDB = REPO + "xw_origin.db"
-#IPSCAN = '192.168.0.1/24'
-#REPO = "/home/soone/code/python/wukong/"
-#LOCALDB = REPO + "xw_origin1.db"
 BRANCHNAME = "xiaowu"
 
 HOSTS = {"soone" : ["14:f6:5a:b9:31:4d"], "adou" : ["8c:77:16:b3:8a:ce"], "soone_lenovo" : ["00:12:fe:c8:62:e0"]}
