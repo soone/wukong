@@ -1,12 +1,15 @@
 #!/usr/bin/env python
 # *-* coding:utf-8 *-*
 
-import threading, git, time, signal
+import threading, git, time, signal, os, sys
 from scapy.all import srp, Ether, ARP, conf
 
 IPSCAN = '192.168.88.1/24'
 REPO = "/home/pi/wukong/"
 LOCALDB = REPO + "xw_origin.db"
+#IPSCAN = '192.168.0.1/24'
+#REPO = "/home/soone/code/python/wukong/"
+#LOCALDB = REPO + "xw_origin1.db"
 BRANCHNAME = "xiaowu"
 
 HOSTS = {"soone" : ["14:f6:5a:b9:31:4d"], "adou" : ["8c:77:16:b3:8a:ce"], "soone_lenovo" : ["00:12:fe:c8:62:e0"]}
@@ -23,7 +26,7 @@ def repoAction():
         origin.push(BRANCHNAME)
 
     except Exception, e:
-        print str(e)
+        print >> sys.stderr, "fork #2 failed: %d (%s)" % (e.errno, e.strerror)
         return False
 
 def getDeviceMac():
@@ -31,7 +34,7 @@ def getDeviceMac():
 	try:
 		ans, unans = srp(Ether(dst="FF:FF:FF:FF:FF:FF")/ARP(pdst=IPSCAN), timeout=2, verbose=False)
 	except Exception, e:
-		print str(e)
+                print >> sys.stderr, "fork #2 failed: %d (%s)" % (e.errno, e.strerror)
 		return False
 	else:
 		for snd, rcv in ans:
@@ -41,7 +44,6 @@ def getDeviceMac():
 
 def checkMacStatus(hostName):
     macs = getDeviceMac()
-    print macs
     for eMac in HOSTS[hostName]:
         if eMac in macs:
             return True
@@ -96,7 +98,11 @@ class PushGit(threading.Thread):
         self.thread_stop = True
 
 def main():
-    global hostNames
+    global hostLastStatus, dbObj
+    hostNames = HOSTS.keys()
+    hostLastStatus = dict({h: [False, 0, 0] for h in hostNames})
+    dbObj = file(LOCALDB, "a+")
+
     threadObjs = []
     for n in hostNames:
         nThread = MyThread(10, n)
@@ -116,12 +122,25 @@ def main():
 
 if __name__ == "__main__":
     try:
-        hostNames = HOSTS.keys()
-        hostLastStatus = dict({h: [False, 0, 0] for h in hostNames})
-        dbObj = file(LOCALDB, "a+")
-        main()
-        while(True):
-            pass
-    finally:
-        dbObj.close()
+        pid = os.fork()
+        if pid > 0:
+            sys.exit(0)
+    except OSError, e:
+        print >> sys.stderr, "fork #1 failed: %d (%s)" % (e.errno, e.strerror)
+        sys.exit(1)
 
+    os.chdir("/")
+    os.setsid()
+    os.umask(0)
+    try:
+        pid = os.fork()
+        if pid > 0:
+            print "Daemon PID %d" % pid
+            sys.exit(0)
+    except OSError, e:
+        print >> sys.stderr, "fork #2 failed: %d (%s)" % (e.errno, e.strerror)
+        sys.exit(1)
+
+    hostLastStatus = dict()
+    dbObj = 0
+    main()
