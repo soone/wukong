@@ -102,11 +102,11 @@ def main():
 
     threadObjs = []
     for n in hostNames:
-        nThread = MyThread(10, n)
+        nThread = MyThread(60, n)
         nThread.start()
         threadObjs.append(nThread)
 
-    pgThread = PushGit(5000)
+    pgThread = PushGit(3600)
     pgThread.start()
     threadObjs.append(pgThread)
 
