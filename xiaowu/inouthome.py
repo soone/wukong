@@ -9,7 +9,7 @@ REPO = "/home/pi/wukong/"
 LOCALDB = REPO + "xw_origin.db"
 BRANCHNAME = "xiaowu"
 
-HOSTS = {"soone" : ["14:f6:5a:b9:31:4d"], "adou" : ["8c:77:16:b3:8a:ce"], "soone_lenovo" : ["00:12:fe:c8:62:e0"]}
+HOSTS = {"soone" : ["10:68:3f:33:11:db"], "adou" : ["8c:77:16:b3:8a:ce"], "soone_lenovo" : ["00:12:fe:c8:62:e0"]}
 REPEATCOUNT = 5
 
 def repoAction():
@@ -115,7 +115,7 @@ def main():
         while True:
             if '192' not in os.popen('ifconfig | grep 192').read():
                 print >> sys.stderr, "wifi is down, restart..."
-                os.system("/etc/init.d/networking restart")
+                print >> sys.stdout, os.popen("/etc/init.d/networking restart").read()
 
             time.sleep(20)
 
@@ -131,25 +131,25 @@ def main():
     signal.signal(signal.SIGTERM, threadExit)
 
 if __name__ == "__main__":
-    try:
-        pid = os.fork()
-        if pid > 0:
-            sys.exit(0)
-    except OSError, e:
-        print >> sys.stderr, "fork #1 failed: %d (%s)" % (e.errno, e.strerror)
-        sys.exit(1)
+    #try:
+    #    pid = os.fork()
+    #    if pid > 0:
+    #        sys.exit(0)
+    #except OSError, e:
+    #    print >> sys.stderr, "fork #1 failed: %d (%s)" % (e.errno, e.strerror)
+    #    sys.exit(1)
 
-    os.chdir("/")
-    os.setsid()
-    os.umask(0)
-    try:
-        pid = os.fork()
-        if pid > 0:
-            print "Daemon PID %d" % pid
-            sys.exit(0)
-    except OSError, e:
-        print >> sys.stderr, "fork #2 failed: %d (%s)" % (e.errno, e.strerror)
-        sys.exit(1)
+    #os.chdir("/")
+    #os.setsid()
+    #os.umask(0)
+    #try:
+    #    pid = os.fork()
+    #    if pid > 0:
+    #        print "Daemon PID %d" % pid
+    #        sys.exit(0)
+    #except OSError, e:
+    #    print >> sys.stderr, "fork #2 failed: %d (%s)" % (e.errno, e.strerror)
+    #    sys.exit(1)
 
     hostLastStatus = dict()
     dbObj = 0
