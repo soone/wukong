@@ -19,6 +19,7 @@ Height: 120mm
 * GitPython
 * scapy
 * bluez-tools
+* numPy
 
 # ToDo
 
